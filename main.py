@@ -1,5 +1,7 @@
+import random
 grid = [['.', '.', '.', '.', '.', '.', '.'], ['.', '.', '.', '.', '.', '.', '.'], ['.', '.', '.', '.', '.', '.', '.'], ['.', '.', '.', '.', '.', '.', '.'], ['.', '.', '.', '.', '.', '.', '.'], ['.', '.', '.', '.', '.', '.', '.']]
 flag = False
+symbol = '0'
 
 def print_grid():
     for i in grid:
@@ -7,29 +9,56 @@ def print_grid():
             print(j, end=' ')
         print()
 
-def player_move():
-    row = int(input('input a row: '))
+def is_legal(row):
     if grid[0][row - 1] != '.':
         print('Illegal move; try again')
         player_move()
     for i in range(1, 7):
         if grid[-i][row - 1] == '.':
-            grid[-i][row - 1] = '0'
+            grid[-i][row - 1] = symbol
             return
 
+def player_move():
+    x = int(input('input a row: '))
+    is_legal(x)
+
+def cpu_move():
+    x = random.randint(1, 7)
+    is_legal(x)
+
 def check_win():
-    # check for a horizontal combination
+    # check for a verticald combination
     for i in range(3):
         for j in range(7):
-            if grid[i][j] == 0 and grid[i + 1][j] == 0 and grid[i + 2][j] == 0 and grid[i + 3][j] == 0:
-                print('checking')
+            if grid[i][j] == symbol and grid[i + 1][j] == symbol and grid[i + 2][j] == symbol and grid[i + 3][j] == symbol:
                 return True
-    return False
+    # check for horizontal combination
+    for i in range(6):
+        for j in range(2):
+            if grid[i][j] == symbol and grid[i][j + 1] == symbol and grid[i][j + 2] == symbol and grid[i][j + 3] == symbol:
+                return True
+    # check for diagonals
+    for i in range(1, 3):
+        for j in range(3):
+            if grid[-i][j] == symbol and grid[-i - 1][j + 1] == symbol and grid[-i - 2][j + 2] == symbol and grid[-i + 3][j + 3] == symbol:
+                return True
+    for i in range(1, 3):
+        for j in range(1, 4):
+            if grid[-i][-j] == symbol and grid[-i - 1][-j - 1] == symbol and grid[-i - 2][-j - 2] == symbol and grid[-i - 3][-j - 3] == symbol:
+                return True
+
 while True:
+    symbol = '0'
     player_move()
-    print_grid()
     flag = check_win()
-    print(flag)
     if flag:
-        print('0 won!')
+        print_grid()
+        print(f'{symbol} won!')
+        break
+    flag = check_win()
+    symbol = 'o'
+    cpu_move()
+    print_grid()
+    if flag:
+        print(f'{symbol} won!')
         break
