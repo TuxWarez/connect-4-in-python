@@ -2,15 +2,20 @@ import random
 import os
 
 grid = [['.', '.', '.', '.', '.', '.', '.'], ['.', '.', '.', '.', '.', '.', '.'], ['.', '.', '.', '.', '.', '.', '.'], ['.', '.', '.', '.', '.', '.', '.'], ['.', '.', '.', '.', '.', '.', '.'], ['.', '.', '.', '.', '.', '.', '.']]
-legal_row = [1, 2, 3, 4, 5, 6, 7]
+legal_row = ['1', '2', '3', '4', '5', '6', '7']
+choose_list = ['1', '2']
 flag = False
 symbol = '0'
 
-def print_table():
+def print_grid():
     for i in grid:
         print(' '.join(i))
 
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
 def is_legal(row):
+    row = int(row)
     if grid[0][row - 1] != '.':
         print('Illegal move; try again')
         player_move()
@@ -20,19 +25,25 @@ def is_legal(row):
             return
 
 def choose():
-    print("do you want to play [1] first or [2] second?")
-    x = int(input())
-    if x == 1:
-        symbol = '0'
+    while True:
+        x = input("Do you want to play [1] first or [2] second? ")
+        if x not in choose_list:
+            print("Invalid input, try again;")
+            continue
+        if x == '1':
+            symbol = '0'
+            return symbol
+        symbol = 'o'
         return symbol
-    symbol = 'o'
-    return symbol
 
 def player_move():
-    x = int(input('input a row: '))
-    if x not in legal_row:
-        player_move()
-    is_legal(x)
+    while True:
+        x = input('input a row: ')
+        if x not in legal_row:
+            print("Invalid input, try again;")
+            continue
+        is_legal(x)
+        return
 
 def cpu_move_random():
     x = random.randint(1, 7)
@@ -88,7 +99,7 @@ def player_ply(mark):
     player_move()
     flag = check_win()
     if flag:
-        os.system('clear')
+        clear_screen()
         print_grid()
         print(f'{symbol} won!')
         return True
@@ -96,7 +107,7 @@ def player_ply(mark):
 def cpu_ply(mark):
     symbol = mark
     cpu_move_random()
-    os.system('clear')
+    clear_screen()
     print_grid()
     flag = check_win()
     if flag:
