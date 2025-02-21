@@ -6,11 +6,9 @@ legal_row = [1, 2, 3, 4, 5, 6, 7]
 flag = False
 symbol = '0'
 
-def print_grid():
+def print_table():
     for i in grid:
-        for j in i:
-            print(j, end=' ')
-        print()
+        print(' '.join(i))
 
 def is_legal(row):
     if grid[0][row - 1] != '.':
